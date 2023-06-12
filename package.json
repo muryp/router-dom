@@ -2,14 +2,54 @@
   "name": "@muryp/router-dom",
   "private": true,
   "version": "0.0.0",
+  "license": "MIT",
+  "description": "spa in astro or native/vanilla js",
   "type": "module",
+  "author": {
+    "url": "https://github.com/alifprihantoro",
+    "name": "alief prihantoro",
+    "email": "alifprihantoro@gmail.com"
+  },
+  "keywords": [
+    "router",
+    "dom",
+    "astro-plugins",
+    "spa",
+    "single-page-apps",
+    "frontend"
+  ],
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.umd.cjs",
+  "types": "./dist/index.d.ts",
+  "module": "./dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/muryp/router-dom.git"
+  },
+  "bugs": {
+    "url": "https://github.com/muryp/router-dom/issues"
+  },
+  "homepage": "https://github.com/muryp/router-dom/tree/main/#readme",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.umd.cjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./types/*":{
+      "types": "./dist/types/*"
+    }
+  },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "dev": "vite build --watch",
+    "build": "vite build"
   },
   "devDependencies": {
+    "@types/node": "^20.3.0",
     "typescript": "^5.0.2",
-    "vite": "^4.3.9"
+    "vite": "^4.3.9",
+    "vite-plugin-dts": "^2.3.0"
   }
 }

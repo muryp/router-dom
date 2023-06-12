@@ -1,81 +1,38 @@
-interface Router {
-  url: string;
-  callback: (arg?: any) => string;
-  listLink?: (url: string) => string[]
-}
+import { Router } from "./types/routers";
 
-const ROUTERS: Router[] = [
-  {
-    url: '/about',
-    callback: function() {
-      return 'page about';
-    }
-  },
-  {
-    url: '/about/{id}',
-    callback: function(arg) {
-      const id = arg?.id;
-      return 'page about id: ' + id;
-    },
-    listLink: function(url: string) {
-      const URL_RESULT: string[] = []
-      for (let i = 0; i < 15; i++) {
-        URL_RESULT.push(url.replace(/{.*}/, `${i}`))
-      }
-      return URL_RESULT
-    }
-  },
-  {
-    url: '/about/{id}/details',
-    callback: function(arg) {
-      const id = arg?.id;
-      return 'page about id: ' + id + ', details sekali';
-    }
-  },
-  {
-    url: '/about/{id}/{sub}',
-    callback: function(arg) {
-      const id = arg?.id;
-      const sub = arg?.sub;
-      return 'page about id: ' + id + ', sub: ' + sub;
-    }
-  },
-];
-
-function findCallback(url: string): string | undefined {
-  for (const router of ROUTERS) {
-    const { url: routerUrl } = router;
-    const params: string[] = [];
-    const pattern = routerUrl.replace(/\{(\w+)\}/g, (_, param) => {
-      params.push(param);
+export function routerCallback(url: string, LIST_RULE_ROUTES: Router[]): string | 404 {
+  for (const RULE_ROUTE of LIST_RULE_ROUTES) {
+    const PARAM_URL_NAME: string[] = []; // collection params on link
+    /**
+    * get name params urls then
+    * @type string : regex urls for select params
+    */
+    const PATERN_URL: string = RULE_ROUTE.url.replace(/\{(\w+)\}/g, (_, param) => {
+      PARAM_URL_NAME.push(param);
       return '([^\\/]+)';
     });
-    const regex = new RegExp('^' + pattern + '$');
-    const match = url.match(regex) as string[] // list args/params
-    if (match) {
+    const REGEX_URL = new RegExp('^' + PATERN_URL + '$');
+    /**
+    * - cek is url match with get rule route
+    * - get param url is have
+    */
+    const isMatch = url.match(REGEX_URL) as string[]
+    if (isMatch) {
       const arg: { [key: string]: string } = {};
-      for (let i = 0; i < params.length; i++) {
-        arg[params[i]] = match[i + 1];
+      for (let i = 0; i < PARAM_URL_NAME.length; i++) {
+        arg[PARAM_URL_NAME[i]] = isMatch[i + 1];
       }
-      return router.callback(arg);
+      return RULE_ROUTE.callback(arg);
     }
   }
-  return undefined;
+  return 404;
 }
-
-// Contoh penggunaan
-const URLS = [
-  '/about',
-  '/about/1',
-  '/about/1/details',
-  '/about/1/setting',
-  '/contact/1/setting',
-]
-URLS.forEach((url) => {
-  const callback = findCallback(url);
-  if (callback) {
-    console.log(callback); // Output: page about id: 123, sub: subpage
-  } else {
-    console.log('404 Not Found');
-  }
-})
+/**
+* generate component based on list urls
+* return string html|404
+*/
+export function ssg(urls: string[], LIST_RULE_ROUTES: Router[]) {
+  return urls.map(url => {
+    return routerCallback(url, LIST_RULE_ROUTES)
+  })
+}
