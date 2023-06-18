@@ -1,0 +1,73 @@
+---
+import { ROUTER_RULE } from "../script/router";
+import { generateStaticUrl, callbackReturn } from "../../src";
+
+const LINK = await generateStaticUrl(ROUTER_RULE, 2);
+const LINK_FULL = await generateStaticUrl(ROUTER_RULE);
+
+export async function getStaticPaths() {
+  const SSG = await generateStaticUrl(ROUTER_RULE);
+  SSG.push(ROUTER_RULE.NOT_FOUND);
+  return SSG.map((CONTENT) => {
+    const slug =
+      CONTENT.url !== "/" ? CONTENT.url.replace(/^\//, "") : undefined;
+    return {
+      params: {
+        slug,
+      },
+      props: CONTENT,
+    };
+  });
+}
+const BASE_URL = ROUTER_RULE.BASE_URL;
+const { title, html } = Astro.props as callbackReturn;
+const lorem:string[] = [];
+for (let i = 0; i < 20; i++) {
+  lorem.push(
+    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia, quasi, nulla illo id doloremque cum itaque quae expedita debitis veniam deleniti! Voluptate animi mollitia, architecto id odio accusantium recusandae rerum."
+  );
+}
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+  </head><path href={BASE_URL}></path>
+  <title>{title}</title>
+
+  <body>
+    <a href="2">current path 2</a> |
+    <a href="./2">current path 2 with ./</a> |
+    <a href="./">current path / del one path</a> |
+    <a href="../">behind path / del two path</a> |
+    <a href="../2">behind path path 2</a> |
+    <a href="/fsadfs">link not found</a> |
+    <h2>Link by number</h2>
+    <nav>
+      {
+        LINK.map(({ url, title }) => {
+          return <a href={BASE_URL + url}>{title}</a>;
+        })
+      }
+    </nav>
+    <h2>All link</h2>
+    <nav>
+      {
+        LINK_FULL.map(({ url, title }) => {
+          return <a href={BASE_URL + url}>{title}</a>;
+        })
+      }
+    </nav>
+    <a href={BASE_URL + "/#1"}>home 1</a>
+    <a href={BASE_URL + "/#15"}>home 15</a>
+    <a href={BASE_URL + "/#19"}>home 19</a>
+    <h2>Link Lorem</h2>
+    {lorem.map((_, i) => <a href={`#${i}`}>{`link ke ${i}`}</a>)}
+    <div id="root" set:html={html} />
+    {lorem.map((val, i) => <p id={i.toString()}>{val}</p>)}
+    <script src="../script/domRoute.ts"></script>
+  </body>
+</html>

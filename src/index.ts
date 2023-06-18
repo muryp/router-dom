@@ -1,7 +1,4 @@
-import { ssg, routerCallback } from './routes/index'
-
-export default {
-  router :{
-    ssg, routerCallback,
-  },
-}
+export * from './routes'
+export * from './routes/ssg'
+export * from './dom'
+export type * from './types/routers'

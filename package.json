@@ -1,10 +1,8 @@
 {
   "name": "@muryp/router-dom",
-  "private": false,
-  "version": "0.0.0",
-  "license": "MIT",
-  "description": "spa in astro or native/vanilla js",
   "type": "module",
+  "version": "0.0.1",
+  "description": "spa in astro or native/vanilla js",
   "author": {
     "url": "https://github.com/alifprihantoro",
     "name": "alief prihantoro",
@@ -18,12 +16,6 @@
     "single-page-apps",
     "frontend"
   ],
-  "files": [
-    "dist"
-  ],
-  "main": "./dist/index.umd.cjs",
-  "types": "./dist/index.d.ts",
-  "module": "./dist/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/muryp/router-dom.git"
@@ -32,31 +24,34 @@
     "url": "https://github.com/muryp/router-dom/issues"
   },
   "homepage": "https://github.com/muryp/router-dom/tree/main/#readme",
+  "scripts": {
+    "astro": "astro",
+    "dev:exam": "astro dev",
+    "build:exam": "astro build",
+    "vite":"vite -c pkg.vite.config.ts",
+    "build": "vite build",
+    "dev": "vite build --watch"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "exports": {
     ".": {
       "import": "./dist/index.js",
-      "require": "./dist/index.umd.cjs",
-      "types": "./dist/index.d.ts"
-    },
-    "./types/*": {
-      "types": "./dist/types/*"
-    },
-    "./router": {
-      "import": "./dist/router/index.js",
-      "require": "./dist/router/index.umd.cjs",
-      "types": "./dist/router/index.d.ts"
+      "require": "./dist/index.cjs",
+      "typings": "./dist/types/routers.d.ts"
     }
   },
-  "scripts": {
-    "dev": "vite build --watch",
-    "build": "vite build",
-    "lint": "eslint ./src/**/*.ts"
-  },
   "devDependencies": {
+    "astro": "^2.6.4",
+    "@rollup/plugin-typescript": "^11.1.1",
     "@types/node": "^20.3.1",
+    "typescript": "^5.1.3",
     "@typescript-eslint/eslint-plugin": "^5.59.11",
     "eslint": "^8.42.0",
-    "typescript": "^5.1.3",
     "vite": "^4.3.9",
     "vite-plugin-dts": "^2.3.0"
   }

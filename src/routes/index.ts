@@ -1,8 +1,10 @@
-import { Router } from '../types/routers'
+import type { Router, RouterRule, callbackReturn } from '../types/routers'
+import convertUrlArg from './ssg'
 
-export function routerCallback(url: string, LIST_RULE_ROUTES: Router[]): string | 404 {
+export async function routerCallback(url: string, { LIST_RULE_ROUTES, NOT_FOUND }: RouterRule): Promise<callbackReturn> {
   for (const RULE_ROUTE of LIST_RULE_ROUTES) {
     const PARAM_URL_NAME: string[] = [] // collection params on link
+    const { domTarget, afterRender, beforeRender } = RULE_ROUTE
     /**
     * get name params urls then
     * @type string : regex urls for select params
@@ -11,7 +13,7 @@ export function routerCallback(url: string, LIST_RULE_ROUTES: Router[]): string 
       PARAM_URL_NAME.push(param)
       return '([^\\/]+)'
     })
-    const REGEX_URL = new RegExp(`^${ PATERN_URL }$`)
+    const REGEX_URL = new RegExp(`^${PATERN_URL}$`)
     /**
     * - cek is url match with get rule route
     * - get param url is have
@@ -22,17 +24,41 @@ export function routerCallback(url: string, LIST_RULE_ROUTES: Router[]): string 
       for (let i = 0; i < PARAM_URL_NAME.length; i++) {
         arg[PARAM_URL_NAME[i]] = isMatch[i + 1]
       }
-      return RULE_ROUTE.callback(arg)
+      const callbackContent = await RULE_ROUTE.callback(arg)
+      return { ...callbackContent, domTarget, afterRender, beforeRender, url }
     }
   }
-  return 404
+  return { ...NOT_FOUND, url }
 }
 /**
 * generate component based on list urls
 * return string html|404
 */
-export function ssg(urls: string[], LIST_RULE_ROUTES: Router[]) {
-  return urls.map(url => {
-    return routerCallback(url, LIST_RULE_ROUTES)
-  })
+export async function generateStaticUrl(RULE_ROUTES: RouterRule, NUM?: number): Promise<callbackReturn[]> {
+  const LIST_CONTENT: callbackReturn[] = []
+  const { LIST_RULE_ROUTES, NOT_FOUND } = RULE_ROUTES
+  const cekLink = async ({ url, listLink }: Router) => {
+    const haveArgs = url.match(/\{.*\}/)
+    if (haveArgs) {
+      if (listLink) {
+        const LIST_LINK = typeof listLink === 'function' ? listLink() : listLink
+        const LIST_URL = convertUrlArg(url, await LIST_LINK)
+        await Promise.all(LIST_URL.map(async URL => {
+          const CONTENT = await routerCallback(URL, RULE_ROUTES)
+          LIST_CONTENT.push(CONTENT)
+        }))
+        return
+      }
+      LIST_CONTENT.push({ ...NOT_FOUND, url })
+      return
+    }
+    LIST_CONTENT.push(await routerCallback(url, RULE_ROUTES))
+    return
+  }
+  if (NUM) {
+    await cekLink(LIST_RULE_ROUTES[NUM])
+    return LIST_CONTENT
+  }
+  await Promise.all(LIST_RULE_ROUTES.map(async (val) => await cekLink(val)))
+  return LIST_CONTENT
 }

@@ -1,31 +1,6 @@
 {
-  "include": [
-    "./src/**/*"
-  ],
-  "baseUrl": "./src",
+  "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
-    "outDir": "dist",
-    "target": "ES2022",
-    "useDefineForClassFields": true,
-    "module": "ES2022",
-    "lib": [
-      "es6",
-      "ES2022"
-    ]
-  },
-  "allowJs": true,
-  "declaration": true,
-  "emitDeclarationOnly": true,
-  "declarationMap": true,
-  "skipLibCheck": true,
-  /* Bundler mode */
-  "allowImportingTsExtensions": true,
-  "resolveJsonModule": true,
-  "isolatedModules": true,
-  "noEmit": true,
-  /* Linting */
-  "strict": true,
-  "noUnusedLocals": true,
-  "noUnusedParameters": true,
-  "noFallthroughCasesInSwitch": true
+    "module": "ES2022"
+  }
 }

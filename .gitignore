@@ -139,3 +139,4 @@ pnpm*
 *.njsproj
 *.sln
 *.sw?
+web

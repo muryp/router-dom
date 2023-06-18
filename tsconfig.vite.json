@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "incremental": true,
+    "target": "es5",
+    "module": "ESNext",
+    "declaration": true,
+    "outDir": "lib",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "lib": [
+      "ES6",
+      "ES2022",
+      "DOM"
+    ],
+    "sourceMap": true,
+    "moduleResolution": "node"
+  },
+  "include": [
+    "src"
+  ]
+}
