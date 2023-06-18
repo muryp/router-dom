@@ -1,0 +1,8 @@
+node_modules
+example
+src
+tsconfig*
+web
+.gitignore
+.eslint*
+pkg.vite.conf*

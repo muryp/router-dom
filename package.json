@@ -1,13 +1,10 @@
 {
   "name": "@muryp/router-dom",
   "type": "module",
+  "private": false,
   "version": "0.0.1",
   "description": "spa in astro or native/vanilla js",
-  "author": {
-    "url": "https://github.com/alifprihantoro",
-    "name": "alief prihantoro",
-    "email": "alifprihantoro@gmail.com"
-  },
+  "author": "alief prihantoro <alifprihantoro@gmail.com> (https://github.com/alifprihantoro)",
   "keywords": [
     "router",
     "dom",
@@ -28,7 +25,7 @@
     "astro": "astro",
     "dev:exam": "astro dev",
     "build:exam": "astro build",
-    "vite":"vite -c pkg.vite.config.ts",
+    "vite": "vite -c pkg.vite.config.ts",
     "build": "vite build",
     "dev": "vite build --watch"
   },
@@ -54,5 +51,12 @@
     "eslint": "^8.42.0",
     "vite": "^4.3.9",
     "vite-plugin-dts": "^2.3.0"
-  }
+  },
+  "dependencies": {
+    "eslint-scope": "^7.2.0",
+    "eslint-visitor-keys": "^3.4.1",
+    "prettier": "^2.8.8",
+    "prettier-plugin-astro": "^0.9.1"
+  },
+  "license": "MIT"
 }
