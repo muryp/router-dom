@@ -1,5 +1,5 @@
 import { selectLink, watchUndoRedo } from '../../src'
-import { ROUTER_RULE } from '../script/router'
+import { ROUTER_RULE } from '../router'
 
 selectLink(ROUTER_RULE)
 watchUndoRedo(ROUTER_RULE)

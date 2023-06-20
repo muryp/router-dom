@@ -1,9 +1,9 @@
 import { defineConfig } from 'astro/config'
 
-// https://astro.build/config
+const BASE_URL = import.meta.env.MODE === 'development' ? '' : '/muryp'
 export default defineConfig({
   outDir: './web/muryp',
-  srcDir:'./example',
-  compressHTML:true,
-  base:'/'
+  srcDir: './example',
+  compressHTML: true,
+  base: BASE_URL,
 })

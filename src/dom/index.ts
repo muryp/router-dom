@@ -11,19 +11,21 @@ const isNewPage = (TARGET_LINK: string) => {
 }
 
 const callBack = async (RouteRule: RouterRule) => {
-  const URL_PATH = STORE.CURRENT_URL.replace(/#.*/, '').replace(new RegExp(`^${ RouteRule.BASE_URL}`, 'i'), '')
-  const { html, title, beforeRender, afterRender, domTarget } = await routerCallback(URL_PATH, RouteRule)
+  const URL_PATH = STORE.CURRENT_URL.replace(/#.*/, '').replace(new RegExp(`^${RouteRule.BASE_URL}`, 'i'), '')
+  const { html, title, innerHtml, beforeRender, afterRender, domTarget } = await routerCallback(URL_PATH, RouteRule)
   beforeRender && beforeRender()
   document.title = title
-  const EL_TARGET_OPTS_GLOBAL = RouteRule.globalDomTarget && RouteRule.globalDomTarget()
-  const EL_TARGET_OPTS = EL_TARGET_OPTS_GLOBAL || domTarget && domTarget()
-  const ROOT_EL = EL_TARGET_OPTS || document.getElementById('root')
-  if (ROOT_EL) {
-    ROOT_EL.innerHTML = html
-    ROOT_EL.scrollIntoView()
-  } else {
-    // eslint-disable-next-line no-alert
-    alert('err: root/opts element not found')
+  if (!innerHtml) {
+    const EL_TARGET_OPTS_GLOBAL = RouteRule.globalDomTarget && RouteRule.globalDomTarget()
+    const EL_TARGET_OPTS = EL_TARGET_OPTS_GLOBAL || domTarget && domTarget()
+    const ROOT_EL = EL_TARGET_OPTS || document.getElementById('root')
+    if (ROOT_EL) {
+      ROOT_EL.innerHTML = html
+      ROOT_EL.scrollIntoView()
+    } else {
+      // eslint-disable-next-line no-alert
+      alert('err: root/opts element not found')
+    }
   }
   STORE.isLinkClick = true
   selectLink(RouteRule)

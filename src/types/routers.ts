@@ -5,6 +5,7 @@ export type callbackReturn = {
   domTarget?: () => HTMLElement | null
   beforeRender?: () => void
   afterRender?: () => void
+  innerHtml?:boolean
 }
 type routerCallback = { html: string, title: string }
 export interface Router {
@@ -14,6 +15,7 @@ export interface Router {
   beforeRender?: () => void
   afterRender?: () => void
   domTarget?: () => HTMLElement | null
+  innerHtml?:boolean
 }
 export interface RouterRule {
   NOT_FOUND: callbackReturn

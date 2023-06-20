@@ -4,7 +4,6 @@ import convertUrlArg from './ssg'
 export async function routerCallback(url: string, { LIST_RULE_ROUTES, NOT_FOUND }: RouterRule): Promise<callbackReturn> {
   for (const RULE_ROUTE of LIST_RULE_ROUTES) {
     const PARAM_URL_NAME: string[] = [] // collection params on link
-    const { domTarget, afterRender, beforeRender } = RULE_ROUTE
     /**
     * get name params urls then
     * @type string : regex urls for select params
@@ -25,7 +24,7 @@ export async function routerCallback(url: string, { LIST_RULE_ROUTES, NOT_FOUND 
         arg[PARAM_URL_NAME[i]] = isMatch[i + 1]
       }
       const callbackContent = await RULE_ROUTE.callback(arg)
-      return { ...callbackContent, domTarget, afterRender, beforeRender, url }
+      return { ...RULE_ROUTE, ...callbackContent, url }
     }
   }
   return { ...NOT_FOUND, url }
@@ -34,7 +33,7 @@ export async function routerCallback(url: string, { LIST_RULE_ROUTES, NOT_FOUND 
 * generate component based on list urls
 * return string html|404
 */
-export async function generateStaticUrl(RULE_ROUTES: RouterRule, NUM?: number): Promise<callbackReturn[]> {
+export async function generateStaticUrl(RULE_ROUTES: RouterRule, ARG?: { URL?: string, NUM?: number }): Promise<callbackReturn[]> {
   const LIST_CONTENT: callbackReturn[] = []
   const { LIST_RULE_ROUTES, NOT_FOUND } = RULE_ROUTES
   const cekLink = async ({ url, listLink }: Router) => {
@@ -55,8 +54,18 @@ export async function generateStaticUrl(RULE_ROUTES: RouterRule, NUM?: number): 
     LIST_CONTENT.push(await routerCallback(url, RULE_ROUTES))
     return
   }
-  if (NUM) {
-    await cekLink(LIST_RULE_ROUTES[NUM])
+  if (ARG?.NUM) {
+    await cekLink(LIST_RULE_ROUTES[ARG.NUM])
+    return LIST_CONTENT
+  }
+  if (ARG?.URL) {
+    for (let i = 1; i < LIST_RULE_ROUTES.length; i++) {
+      const isMatch = LIST_RULE_ROUTES[i-1].url.match(ARG.URL)
+      if (isMatch) {
+        await cekLink(LIST_RULE_ROUTES[i-1])
+        break
+      }
+    }
     return LIST_CONTENT
   }
   await Promise.all(LIST_RULE_ROUTES.map(async (val) => await cekLink(val)))

@@ -1,5 +1,10 @@
 import type { RouterRule } from '../../src'
 
+const id: number[] = []
+for (let i = 0; i < 15; i++) {
+  id.push(i)
+}
+
 const BASE_URL = import.meta.env.MODE === 'development' ? '' : '/muryp'
 export const ROUTER_RULE: RouterRule = {
   NOT_FOUND: { html: '404 not found', title: 'page 404', url: '404' },
@@ -26,13 +31,7 @@ export const ROUTER_RULE: RouterRule = {
         const id = arg?.id
         return { html: `page about id: ${id}`, title: `page about by id - ${id}` }
       },
-      listLink: async function() {
-        const id:number[] = []
-        for (let i = 0; i < 15; i++) {
-          id.push(i)
-        }
-        return { id }
-      },
+      listLink: { id },
     },
     {
       url: '/about/{id}/details',
@@ -40,27 +39,24 @@ export const ROUTER_RULE: RouterRule = {
         const id = arg?.id
         return { html: `page about id: ${id}, details sekali`, title: 'page about by id sekali' }
       },
-      listLink: async function() {
-        const id:number[] = []
-        for (let i = 0; i < 15; i++) {
-          id.push(i)
-        }
-        return { id }
-      },
+      listLink: { id },
     },
     {
       url: '/about/{id}/{sub}',
       callback: async function(arg: any) {
         const id = arg?.id
         const sub = arg?.sub
-        return { html: `page about id: ${id}, sub: ${sub}`, title: 'page about by id sub' }
+        const title = `pages with ${id} on sub : ${sub}`
+        const html = `
+<h1>pages with ${id} on sub : ${sub}</h1>
+<p>content paragraf with ${id} on sub : ${sub}</p> 
+`
+        return { html, title}
       },
       listLink: async function() {
-        const id:number[] = []
-        for (let i = 0; i < 15; i++) {
-          id.push(i)
-        }
-        return { id, sub: ['private', 'public'] }
+        // this function will be execute once in pages
+        const sub = ['private', 'public']
+        return { id, sub }
       },
     },
   ],

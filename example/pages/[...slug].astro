@@ -1,12 +1,11 @@
 ---
-import { ROUTER_RULE } from "../script/router";
+import { ROUTER_RULE } from "../router";
 import { generateStaticUrl, callbackReturn } from "../../src";
-
-const LINK = await generateStaticUrl(ROUTER_RULE, 2);
-const LINK_FULL = await generateStaticUrl(ROUTER_RULE);
 
 export async function getStaticPaths() {
   const SSG = await generateStaticUrl(ROUTER_RULE);
+  const LINK_FULL = SSG;
+  const LINK = await generateStaticUrl(ROUTER_RULE,{NUM: 2});
   SSG.push(ROUTER_RULE.NOT_FOUND);
   return SSG.map((CONTENT) => {
     const slug =
@@ -15,18 +14,16 @@ export async function getStaticPaths() {
       params: {
         slug,
       },
-      props: CONTENT,
+      props: { ...CONTENT, LINK_FULL, LINK },
     };
   });
 }
 const BASE_URL = ROUTER_RULE.BASE_URL;
-const { title, html } = Astro.props as callbackReturn;
-const lorem:string[] = [];
-for (let i = 0; i < 20; i++) {
-  lorem.push(
-    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia, quasi, nulla illo id doloremque cum itaque quae expedita debitis veniam deleniti! Voluptate animi mollitia, architecto id odio accusantium recusandae rerum."
-  );
+interface AstroProps extends callbackReturn {
+  LINK_FULL : callbackReturn[]
+  LINK : callbackReturn[]
 }
+const { title, html, LINK_FULL, LINK } = Astro.props as AstroProps;
 ---
 
 <html lang="en">
@@ -35,9 +32,9 @@ for (let i = 0; i < 20; i++) {
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
-  </head><path href={BASE_URL}></path>
-  <title>{title}</title>
-
+    <path href={BASE_URL}/>
+    <title>{title}</title>
+  </head>
   <body>
     <a href="2">current path 2</a> |
     <a href="./2">current path 2 with ./</a> |
@@ -61,13 +58,13 @@ for (let i = 0; i < 20; i++) {
         })
       }
     </nav>
+    <h2>TES LINK HOME HASTAG</h2>
     <a href={BASE_URL + "/#1"}>home 1</a>
     <a href={BASE_URL + "/#15"}>home 15</a>
     <a href={BASE_URL + "/#19"}>home 19</a>
-    <h2>Link Lorem</h2>
-    {lorem.map((_, i) => <a href={`#${i}`}>{`link ke ${i}`}</a>)}
     <div id="root" set:html={html} />
-    {lorem.map((val, i) => <p id={i.toString()}>{val}</p>)}
     <script src="../script/domRoute.ts"></script>
   </body>
+
+
 </html>
