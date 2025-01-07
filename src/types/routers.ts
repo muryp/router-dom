@@ -1,6 +1,6 @@
 export type callbackReturn = {
-  html: string,
-  title: string,
+  html?: string,
+  title?: string,
   url: string,
   domTarget?: () => HTMLElement | null
   beforeRender?: () => void
@@ -10,7 +10,7 @@ export type callbackReturn = {
 type routerCallback = { html: string, title: string }
 export interface Router {
   url: string
-  callback: (arg?: { [key: string]: string }) => Promise<routerCallback>
+  callback: (arg?: { [key: string]: string }) => Promise<routerCallback|void>
   listLink?: ArgObj | (() => Promise<ArgObj>)
   beforeRender?: () => void
   afterRender?: () => void
@@ -21,6 +21,6 @@ export interface RouterRule {
   NOT_FOUND: callbackReturn
   BASE_URL: string
   LIST_RULE_ROUTES: Router[]
-  globalDomTarget?: () => HTMLElement | null
+  globalDomTarget?: () => HTMLElement
 }
 export type ArgObj = { [key: string]: (string | number)[] }
