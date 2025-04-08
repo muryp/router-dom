@@ -1,4 +1,4 @@
-import type { RouterRule } from '../../src'
+import type { RouterRule } from '../../src/types/routers'
 
 const id: number[] = []
 for (let i = 0; i < 15; i++) {
@@ -9,6 +9,9 @@ const BASE_URL = import.meta.env.MODE === 'development' ? '' : '/muryp'
 export const ROUTER_RULE: RouterRule = {
   NOT_FOUND: { html: '404 not found', title: 'page 404', url: '404' },
   BASE_URL,
+  globalDomTarget: () => {
+    return document.getElementById('root')
+  },
   LIST_RULE_ROUTES: [
     {
       url: '/',
@@ -20,9 +23,6 @@ export const ROUTER_RULE: RouterRule = {
       url: '/about',
       callback: async function() {
         return { html: 'page about', title: 'page about' }
-      },
-      domTarget: () => {
-        return document.getElementById('root')
       },
     },
     {

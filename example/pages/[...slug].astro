@@ -1,6 +1,6 @@
 ---
 import { ROUTER_RULE } from "../router";
-import { generateStaticUrl, callbackReturn } from "../../src";
+import { generateStaticUrl, callbackReturn } from "../../src/routes";
 
 export async function getStaticPaths() {
   const SSG = await generateStaticUrl(ROUTER_RULE);
@@ -37,9 +37,9 @@ import Footer from "../component/footer";
     <title>{title}</title>
   </head>
   <body>
-    {Nav}
+    <div id="nav" set:html={Nav} />
     <div id="root" set:html={html} />
-    {Footer}
+    <div id="footer" set:html={Footer} />
     <script src="../script/domRoute.ts"></script>
   </body>
 </html>
