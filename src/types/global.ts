@@ -14,7 +14,6 @@ export type TMurypRouteConfig = {
   component?: RouteComponent;
   middleware?: (args: TContextUrl) => boolean;
   script?: (args: TContextUrl) => void;
-  id?: string;
 };
 
 export type TMurypRoutes = {
