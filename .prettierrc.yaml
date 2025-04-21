@@ -1,0 +1,8 @@
+trailingComma: "all"
+tabWidth: 2
+semi: true
+singleQuote: true
+jsxSingleQuote: true
+quoteProps: consistent
+cursorOffset: -1
+bracketSameLine: true

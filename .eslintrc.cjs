@@ -3,6 +3,7 @@ module.exports = {
     browser: true,
     es2021: true,
   },
+  extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',
@@ -10,27 +11,32 @@ module.exports = {
   },
   plugins: ['@typescript-eslint'],
   rules: {
-    'comma-dangle': ['warn', 'always-multiline'],
-    'prefer-template': ['warn'],
-    'no-multi-spaces': ['warn', { ignoreEOLComments: false }],
-    'no-multiple-empty-lines': ['warn', { max: 1 }],
-    'no-trailing-spaces': ['warn'],
-    'no-mixed-spaces-and-tabs': ['warn'],
-    camelcase: ['warn'],
-    indent: ['warn', 2],
-    'linebreak-style': [
-      'warn',
-      'unix',
-    ],
-    quotes: [
-      'warn',
-      'single',
-    ],
-    semi: [
-      'warn',
-      'never',
-    ],
+    'comma-dangle': ['error', 'always-multiline'],
+    'prefer-template': ['error'],
+    'no-multi-spaces': ['error', { ignoreEOLComments: false }],
+    'no-multiple-empty-lines': ['error', { max: 1 }],
+    'no-trailing-spaces': ['error'],
+    'no-mixed-spaces-and-tabs': ['error'],
+    'camelcase': ['error'],
+    'indent': ['error', 2],
+    'linebreak-style': ['error', 'unix'],
+    'quotes': ['error', 'single'],
+    'semi': ['error', 'always'],
     'no-console': ['warn'],
     'no-alert': ['warn'],
   },
+  overrides: [
+    {
+      files: ['*.ts'],
+      plugins: ['lit', 'lit-a11y'],
+      extends: [
+        'plugin:wc/recommended',
+        'plugin:lit/recommended',
+        'plugin:lit-a11y/recommended',
+      ],
+      rules: {
+        'lit/no-template-map': 'error',
+      },
+    },
+  ],
 }
