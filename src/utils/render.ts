@@ -1,12 +1,40 @@
 import type { TMurypRouteConfig, TMurypRoutesDomArgs } from '../types/global';
 import findRoutes from './findRoutes';
 
-// TODO: EXECUTE MIDDLEWARE AND SCRIPT BEFORE  AND AFTER RENDERING
 export default async function render({
   routes,
   settings,
 }: TMurypRoutesDomArgs) {
+  // INIT ARGS
   const CURR_URL = window.location.href;
+  const Args = {
+    params: {},
+    query: {},
+    url: CURR_URL,
+    id: settings.id,
+  };
+
+  // GET QUERY
+  const QUERY: string | { [key: string]: string } = CURR_URL.split('?')[1];
+  if (QUERY) {
+    Args.query = QUERY.split('&').reduce(
+      (acc: { [key: string]: string }, curr: string) => {
+        const [key, value] = curr.split('=');
+        acc[key] = decodeURIComponent(value);
+        return acc;
+      },
+      {},
+    );
+  }
+
+  // GLOBAL MIDDLEWARE
+  if (settings.middleware) {
+    const checkMiddleware = settings.middleware(Args);
+    if (checkMiddleware === false) {
+      return;
+    }
+  }
+
   const getCurrUrl = new URL(CURR_URL).hash.replace(/\?.*/, '').split('/');
 
   let getRoute: TMurypRouteConfig | undefined = undefined;
@@ -15,12 +43,6 @@ export default async function render({
     getRoute = routes['@home'] as TMurypRouteConfig;
   }
   getCurrUrl.shift();
-  const Args = {
-    params: {},
-    query: {},
-    url: CURR_URL,
-    id: settings.id,
-  };
   if (getRoute === undefined) {
     const checkRoutes = findRoutes(getCurrUrl, 0, routes);
     Args.params = checkRoutes.params;
@@ -54,22 +76,14 @@ export default async function render({
       if (notFound.script) {
         notFound.script(Args);
       }
+
+      // RUN GLOBAL SCRIPT ON 404
+      if (settings.script) {
+        settings.script(Args);
+      }
     }
 
     return;
-  }
-
-  // GET QUERY
-  const QUERY: string | { [key: string]: string } = CURR_URL.split('?')[1];
-  if (QUERY) {
-    Args.query = QUERY.split('&').reduce(
-      (acc: { [key: string]: string }, curr: string) => {
-        const [key, value] = curr.split('=');
-        acc[key] = decodeURIComponent(value);
-        return acc;
-      },
-      {},
-    );
   }
 
   // MIDDLEWARE
@@ -126,5 +140,10 @@ export default async function render({
   // RUN SCRIPT
   if (getRoute.script) {
     getRoute.script(Args);
+  }
+
+  // RUN GLOBAL SCRIPT
+  if (settings.script) {
+    settings.script(Args);
   }
 }
