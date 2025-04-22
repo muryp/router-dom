@@ -1,7 +1,8 @@
 import type { TMurypRouteConfig, TMurypRoutesDomArgs } from '../types/global';
 import findRoutes from './findRoutes';
 
-// TODO: GOTO ID
+// TODO: MOVE NOT FOUND PAGE INTO ROUTES
+// TODO: EXECUTE MIDDLEWARE AND SCRIPT BEFORE  AND AFTER RENDERING
 export default async function render({
   routes,
   settings,
@@ -52,12 +53,7 @@ export default async function render({
       }
 
       if (notFound.script) {
-        notFound.script({
-          params: {},
-          query: {},
-          url: CURR_URL,
-          id: settings.id,
-        });
+        notFound.script(Args);
       }
     }
 
@@ -100,6 +96,9 @@ export default async function render({
     }
   }
 
+  // GOTO TOP ELEMENT
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
   // RENDER COMPONENT
   const COMPONENT = getRoute.component;
   if (COMPONENT) {
@@ -112,6 +111,16 @@ export default async function render({
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         document.getElementById(settings.id)!.innerHTML = COMPONENT_FUNC;
       }
+    }
+  }
+
+  // GOTO ID
+  const getId = CURR_URL.split('#');
+  if (getId.length ===3) {
+    const ID = getId[2];
+    const getEl = document.getElementById(ID);
+    if (getEl) {
+      getEl.scrollIntoView();
     }
   }
 

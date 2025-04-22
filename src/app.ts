@@ -1,6 +1,3 @@
-// TODO: get routes
-// TODO: change routes
-
 import type { TMurypRoutesDomArgs } from './types/global';
 import { convertRoutes } from './utils/convertObj';
 import onChange from './utils/onChange';

@@ -29,7 +29,7 @@ export default function findRoutes(
   if (hasChildren) {
     if (hasDynamic) {
       const dynamicKeys = getDynamicKeys(routes);
-      params[dynamicKeys[0]] = currentSegment;
+      params[dynamicKeys[0].replace(':','')] = currentSegment.replace(/^(.*)[#?]/,'$1');
       return findRoutes(
         url,
         index + 1,
@@ -42,7 +42,7 @@ export default function findRoutes(
 
   if (hasDynamic) {
     const dynamicKeys = getDynamicKeys(routes);
-    params[dynamicKeys[0]] = currentSegment;
+    params[dynamicKeys[0].replace(':','')] = currentSegment.replace(/[#|?].*/,'');
     return {
       router: routes[dynamicKeys[0]] as TMurypRoutes,
       params,
