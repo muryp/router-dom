@@ -3,6 +3,13 @@ import MurypRoutesDom from '../../../src/app';
 
 MurypRoutesDom({
   routes: {
+    '@404':{
+      component: ({ url }) => `<h1>404 Not Found</h1><div>URL: ${url}</div>`,
+      title: ({ url }) => `404 - ${url}`,
+      script: ({ url }) => {
+        console.log('404 script executed', url);
+      },
+    },
     '/': {
       component: ({ url }) => `<h1>Home</h1><div>URL: ${url}</div>`,
       title: ({ url }) => `Home - ${url}`,

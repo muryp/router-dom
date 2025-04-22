@@ -1,21 +1,18 @@
 import type { TMurypRouteConfig, TMurypRoutesDomArgs } from '../types/global';
 import findRoutes from './findRoutes';
 
-// TODO: MOVE NOT FOUND PAGE INTO ROUTES
 // TODO: EXECUTE MIDDLEWARE AND SCRIPT BEFORE  AND AFTER RENDERING
 export default async function render({
   routes,
   settings,
 }: TMurypRoutesDomArgs) {
   const CURR_URL = window.location.href;
-  const getCurrUrl = new URL(CURR_URL).hash
-    .replace(/\?.*/, '')
-    .split('/');
+  const getCurrUrl = new URL(CURR_URL).hash.replace(/\?.*/, '').split('/');
 
   let getRoute: TMurypRouteConfig | undefined = undefined;
 
   if (getCurrUrl.length === 1 || getCurrUrl[1] === '') {
-    getRoute = routes['@home'];
+    getRoute = routes['@home'] as TMurypRouteConfig;
   }
   getCurrUrl.shift();
   const Args = {
@@ -29,26 +26,28 @@ export default async function render({
     Args.params = checkRoutes.params;
     getRoute = checkRoutes.router as TMurypRouteConfig | undefined;
   }
+
   // 404 NOT FOUND
   if (getRoute === undefined) {
-    const notFound = settings.notFound;
+    const notFound = routes['@404'] as TMurypRouteConfig;
+
     if (notFound?.middleware) {
       const checkMiddleware = notFound.middleware(Args);
       if (checkMiddleware === false) {
         return;
       }
-      const COMPONENT = notFound.component;
+    }
 
-      if (COMPONENT) {
-        if (typeof COMPONENT === 'string') {
+    const COMPONENT = notFound.component;
+    if (COMPONENT) {
+      if (typeof COMPONENT === 'string') {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        document.getElementById(settings.id)!.innerHTML = COMPONENT;
+      } else {
+        const COMPONENT_FUNC = await COMPONENT(Args);
+        if (typeof COMPONENT_FUNC === 'string') {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          document.getElementById(settings.id)!.innerHTML = COMPONENT;
-        } else {
-          const COMPONENT_FUNC = await COMPONENT(Args);
-          if (typeof COMPONENT_FUNC === 'string') {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            document.getElementById(settings.id)!.innerHTML = COMPONENT_FUNC;
-          }
+          document.getElementById(settings.id)!.innerHTML = COMPONENT_FUNC;
         }
       }
 
@@ -116,7 +115,7 @@ export default async function render({
 
   // GOTO ID
   const getId = CURR_URL.split('#');
-  if (getId.length ===3) {
+  if (getId.length === 3) {
     const ID = getId[2];
     const getEl = document.getElementById(ID);
     if (getEl) {

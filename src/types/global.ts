@@ -10,7 +10,9 @@ type RouteComponent =
   | ((args: TContextUrl) => Promise<string> | string | undefined);
 
 export type TMurypRouteConfig = {
-  title?: string | ((args:TContextUrl) => string|undefined|Promise<string>);
+  title?:
+    | string
+    | ((args: TContextUrl) => string | undefined | Promise<string>);
   component?: RouteComponent;
   middleware?: (args: TContextUrl) => boolean;
   script?: (args: TContextUrl) => void;
@@ -18,6 +20,7 @@ export type TMurypRouteConfig = {
 
 export type TMurypRoutes = {
   [path: string]: TMurypRouteConfig | TMurypRoutes;
+  '@404': TMurypRouteConfig | TMurypRoutes;
 };
 
 export type TMurypRoutesDomArgs = {
@@ -26,7 +29,6 @@ export type TMurypRoutesDomArgs = {
     id: string;
     middleware?: (args: TContextUrl) => boolean;
     script?: (args: TContextUrl) => void;
-    notFound?: TMurypRouteConfig;
     isFirstRender?: boolean;
   };
 };
