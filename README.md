@@ -1,204 +1,148 @@
-## Introducing @muryp/router-dom - Router and SPA Library for Astro JS
+## Introducing @muryp/router-dom - A Router and SPA Library for Astro JS
+
 [![npm version](https://img.shields.io/npm/v/@muryp/router-dom.svg?style=flat-square)](https://www.npmjs.com/package/@muryp/router-dom)
 [![npm downloads](https://img.shields.io/npm/dm/@muryp/router-dom.svg?style=flat-square)](https://www.npmjs.com/package/@muryp/router-dom)
 [![GitHub license](https://img.shields.io/github/license/muryp/router-dom.svg?style=flat-square)](https://github.com/muryp/router-dom/blob/main/LICENSE)
 
-@muryp/router-dom is a powerful and lightweight routing library specifically designed for Astro JS. It provides seamless integration with Astro JS projects and offers a simple and efficient way to build Single Page Applications (SPAs) without the need for additional frameworks.
+@muryp/router-dom is a lightweight and powerful routing library designed specifically for Astro JS or just vanilla. It seamlessly integrates with Astro JS projects, enabling developers to build Single Page Applications (SPAs) efficiently without requiring additional frameworks.
 
 ### Key Features
 
-- **Router and SPA Support:** @muryp/router-dom enables developers to create robust SPAs and manage client-side routing in Astro JS projects. It provides a smooth navigation experience and allows for dynamic content loading without page refreshes.
+- **Router and SPA Support:** @muryp/router-dom allows developers to create robust SPAs and manage client-side routing in Astro JS projects. It provides smooth navigation and dynamic content loading without page refreshes.
 
-- **Astro JS Compatibility:** The library is fully compatible with Astro JS, a modern static site builder for faster websites. By using @muryp/router-dom with Astro JS, you can enjoy the benefits of a static site generator and a powerful routing system together.
+- **Astro JS Compatibility:** Fully compatible with Astro JS, a modern static site generator for building fast websites. By combining @muryp/router-dom with Astro JS, you can enjoy the benefits of static site generation alongside a powerful routing system.
 
-- **TypeScript Support:** @muryp/router-dom is built with TypeScript, providing strong typing support for a more reliable and maintainable development experience. TypeScript enables better code quality, editor autocompletion, and catching potential errors during the development process.
+- **TypeScript Support:** Built with TypeScript, @muryp/router-dom offers strong typing for a more reliable and maintainable development experience. TypeScript enhances code quality, provides editor autocompletion, and helps catch potential errors during development.
 
 ### Requirements
 
-To use @muryp/router-dom, make sure you meet the following requirements:
+To use @muryp/router-dom, ensure the following prerequisites are met:
 
-- Astro JS: Ensure you have Astro JS installed in your project. It provides the foundation for building static websites with dynamic capabilities.
-
-- Node.js v16 LTS: The library requires Node.js version 16 (or later) to ensure compatibility and take advantage of the latest JavaScript features.
-
-- TypeScript: It is recommended to use TypeScript for your Astro JS project to leverage the full benefits of @muryp/router-dom's typing support.
+- **Astro JS:** Install Astro JS in your project as it serves as the foundation for building static websites with dynamic capabilities.
+- **Node.js v20 LTS or later:** The library requires Node.js version 16 or newer to ensure compatibility and leverage modern JavaScript features.
+- **TypeScript:** Using TypeScript is recommended to fully utilize the library's typing support.
 
 ### Installation
 
-You can install @muryp/router-dom using one of the following package managers: npm, Yarn, or pnpm.
+Install @muryp/router-dom using your preferred package manager:
 
 **NPM:**
+
 ```bash
 npm install @muryp/router-dom
 ```
+
 **Yarn:**
+
 ```bash
 yarn add @muryp/router-dom
 ```
+
 **PNPM:**
+
 ```bash
 pnpm add @muryp/router-dom
 ```
 
 ### Usage
 
-#### configuration
-```typescript
-import type { RouterRule } from '@muryp/router-dom'
+For usage examples, refer to the following files:
 
-const BASE_URL = import.meta.env.MODE === 'development' ? '' : '/muryp'
-export const ROUTER_RULE: RouterRule = {
-  NOT_FOUND: { html: '404 not found', title: 'page 404', url: '404' },
-  BASE_URL,
-  LIST_RULE_ROUTES: [
-    {
-      url: '/',
-      callback: async function() {
-        return { html: 'page home', title: 'page home' }
-      },
-    },
-    {
-      url: '/about',
-      callback: async function() {
-        return { html: 'page about', title: 'page about' }
-      },
-      domTarget: () => {
-        return document.getElementById('root')
-      },
-    },
-    {
-      url: '/about/{id}',
-      callback: async function(arg: any) {
-        const id = arg?.id
-        return { html: `page about id: ${id}`, title: `page about by id - ${id}` }
-      },
-      listLink: async function() {
-        const id:number[] = []
-        for (let i = 0; i < 15; i++) {
-          id.push(i)
+- `./example/assets/scripts/DomRouter.ts`
+- `./src/types/global.ts`
+
+#### Router Configuration
+
+- **`component`**: Renders the component or HTML.
+- **`title`**: Sets the page title.
+- **`middleware`**: Executes before rendering. If it returns `false`, rendering and scripts are skipped.
+- **`script`**: Executes after rendering.
+- **Middleware**: Middleware functions are executed before rendering a route. They can be used for authentication, logging, or other pre-render checks. If the middleware returns `false`, the rendering and scripts for the route will be skipped.
+
+  Example:
+
+  ```typescript
+  {
+    '/dashboard': {
+      middleware: ({ params, url, query }) => {
+        if (!query.authenticated) {
+          console.log('Access denied:', url);
+          return false; // Prevent rendering
         }
-        return { id }
-      },
-    },
-    {
-      url: '/about/{id}/details',
-      callback: async function(arg: any) {
-        const id = arg?.id
-        return { html: `page about id: ${id}, details sekali`, title: 'page about by id sekali' }
-      },
-      listLink: async function() {
-        const id:number[] = []
-        for (let i = 0; i < 15; i++) {
-          id.push(i)
-        }
-        return { id }
-      },
-    },
-    {
-      url: '/about/{id}/{sub}',
-      callback: async function(arg: any) {
-        const id = arg?.id
-        const sub = arg?.sub
-        return { html: `page about id: ${id}, sub: ${sub}`, title: 'page about by id sub' }
-      },
-      listLink: async function() {
-        const id:number[] = []
-        for (let i = 0; i < 15; i++) {
-          id.push(i)
-        }
-        return { id, sub: ['private', 'public'] }
-      },
-    },
-  ],
-}
-```
-in astro page :
-```astro
----
-import { ROUTER_RULE } from "../script/router";
-import { generateStaticUrl, callbackReturn } from "../../src";
-
-const LINK = await generateStaticUrl(ROUTER_RULE, 2);
-const LINK_FULL = await generateStaticUrl(ROUTER_RULE);
-
-export async function getStaticPaths() {
-  const SSG = await generateStaticUrl(ROUTER_RULE);
-  SSG.push(ROUTER_RULE.NOT_FOUND);
-  return SSG.map((CONTENT) => {
-    const slug =
-      CONTENT.url !== "/" ? CONTENT.url.replace(/^\//, "") : undefined;
-    return {
-      params: {
-        slug,
-      },
-      props: CONTENT,
-    };
-  });
-}
-const BASE_URL = ROUTER_RULE.BASE_URL;
-const { title, html } = Astro.props as callbackReturn;
-const lorem:string[] = [];
-for (let i = 0; i < 20; i++) {
-  lorem.push(
-    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia, quasi, nulla illo id doloremque cum itaque quae expedita debitis veniam deleniti! Voluptate animi mollitia, architecto id odio accusantium recusandae rerum."
-  );
-}
----
-
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-  </head><path href={BASE_URL}></path>
-  <title>{title}</title>
-
-  <body>
-    <a href="2">current path 2</a> |
-    <a href="./2">current path 2 with ./</a> |
-    <a href="./">current path / del one path</a> |
-    <a href="../">behind path / del two path</a> |
-    <a href="../2">behind path path 2</a> |
-    <a href="/fsadfs">link not found</a> |
-    <h2>Link by number</h2>
-    <nav>
-      {
-        LINK.map(({ url, title }) => {
-          return <a href={BASE_URL + url}>{title}</a>;
-        })
+        console.log('Access granted:', url);
+        return true; // Allow rendering
       }
-    </nav>
-    <h2>All link</h2>
-    <nav>
-      {
-        LINK_FULL.map(({ url, title }) => {
-          return <a href={BASE_URL + url}>{title}</a>;
-        })
+    }
+  }
+  ```
+
+- **Script**: Scripts are executed after the route is rendered. They can be used for initializing components, attaching event listeners, or other post-render tasks.
+
+  Example:
+
+  ```typescript
+  {
+    '/profile/:id': {
+      script: ({ params, url, query }) => {
+        console.log(`Profile script executed for ID: ${params.id}`, url, query);
+        // Initialize profile-specific components here
       }
-    </nav>
-    <a href={BASE_URL + "/#1"}>home 1</a>
-    <a href={BASE_URL + "/#15"}>home 15</a>
-    <a href={BASE_URL + "/#19"}>home 19</a>
-    <h2>Link Lorem</h2>
-    {lorem.map((_, i) => <a href={`#${i}`}>{`link ke ${i}`}</a>)}
-    <div id="root" set:html={html} />
-    {lorem.map((val, i) => <p id={i.toString()}>{val}</p>)}
-    <script src="../script/domRoute.ts"></script>
-  </body>
-</html>
-```
+    }
+  }
+  ```
+
+#### URL Configuration
+
+- **`@404`**: Required for handling invalid or not-found URLs.
+- **`@home` or `/`**: Required for defining the home route.
+- **Dynamic Parameters**: Use `/product/:id` and access parameters like this:
+  ```javascript
+  ({ params }) => {
+    const { id } = params;
+  };
+  ```
+- **Nested URLs**: Define nested routes like `/product/:id/detail` or:
+
+  ```typescript
+  {
+    '/product/:id': {
+      '/detail': {}
+    }
+  }
+
+  ```
+
+- **Query**: Query parameters from the URL can be accessed in the `query` object. This is useful for passing additional data to routes.
+
+  Example:
+
+  ```typescript
+  {
+    '/search': {
+      component: ({ query }) => `
+        <h1>Search Results</h1>
+        <div>Query: ${JSON.stringify(query)}</div>
+      `,
+      script: ({ query }) => {
+        console.log('Search query:', query);
+      }
+    }
+  }
+  ```
+
+  Example URL: `http://example.com/#/search?term=astro&category=js`
+
+#### Global Settings
+
+- **`id`**: Specifies the target element ID for rendering.
+- **`middleware`**: Defines global middleware.
+- **`script`**: Executes global scripts.
+- **`isFirstRender`**: Prevents rendering on the first load, useful for SSR/SSG.
 
 ### Contributing
 
-Contributions to @muryp/router-dom are highly appreciated. If you encounter any issues, have suggestions, or would like to contribute new features, please visit the [GitHub repository](https://github.com/muryp/router-dom) to get involved.
+Contributions to @muryp/router-dom are welcome! If you encounter issues, have suggestions, or want to contribute new features, visit the [GitHub repository](https://github.com/muryp/router-dom) to get involved.
 
 ### License
 
-
-
-@muryp/router-dom is released under the [MIT License](https://github.com/muryp/router-dom/blob/main/LICENSE), granting you the freedom to use, modify, and distribute the library according to your requirements.
-
----
-
-@muryp/router-dom provides a seamless integration of routing capabilities into your Astro JS projects. With its compatibility, lightweight nature, and TypeScript support, you can easily build powerful Single Page Applications without the need for additional frameworks. Start using @muryp/router-dom today and take your Astro JS projects to the next level!
+@muryp/router-dom is released under the [MIT License](https://github.com/muryp/router-dom/blob/main/LICENSE), allowing you to use, modify, and distribute the library as needed.
