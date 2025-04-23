@@ -31,6 +31,10 @@ export default async function render({
   if (settings.middleware) {
     const checkMiddleware = settings.middleware(Args);
     if (checkMiddleware === false) {
+      const prevUrl = window.history.state?.prevUrl;
+      if (prevUrl) {
+        window.history.pushState({}, '', prevUrl);
+      }
       return;
     }
   }
@@ -56,6 +60,10 @@ export default async function render({
     if (notFound?.middleware) {
       const checkMiddleware = notFound.middleware(Args);
       if (checkMiddleware === false) {
+        const prevUrl = window.history.state?.prevUrl;
+        if (prevUrl) {
+          window.history.pushState({}, '', prevUrl);
+        }
         return;
       }
     }
