@@ -25,21 +25,23 @@
     "astro": "astro",
     "dev:exam": "astro dev",
     "build:exam": "astro build",
-    "vite": "vite -c pkg.vite.config.ts",
-    "build": "vite build",
-    "dev": "vite build --watch"
+    "build": "vite -c pkg.vite.config.ts build",
+    "released": "pnpm build && pnpm publish --access public"
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "typings": "./dist/index.d.ts",
+  "main": "./dist/app.cjs",
+  "module": "./dist/app.js",
+  "typings": "./dist/app.d.ts",
   "files": [
     "dist"
   ],
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs",
-      "typings": "./dist/types/routers.d.ts"
+      "import": "./dist/app.js",
+      "require": "./dist/app.cjs",
+      "typings": "./dist/app.d.ts"
+    },
+    "./types": {
+      "typings": "./dist/types/global.d.ts"
     }
   },
   "devDependencies": {

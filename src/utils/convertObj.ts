@@ -1,7 +1,7 @@
 import type { TMurypRoutes } from '../types/global';
 
 export function convertRoutes(routes: TMurypRoutes): TMurypRoutes {
-  const result: TMurypRoutes = {};
+  const result: TMurypRoutes = {} as TMurypRoutes;
 
   for (const key in routes) {
     // Skip prototype properties
@@ -18,7 +18,7 @@ export function convertRoutes(routes: TMurypRoutes): TMurypRoutes {
       // Recursively transform the nested part
       result[first] = {
         ...result[first],
-        ...convertRoutes({ [rest.join('/')]: routes[key] }),
+        ...convertRoutes({ [rest.join('/')]: routes[key] } as TMurypRoutes) ,
       };
     } else {
       // Single level
