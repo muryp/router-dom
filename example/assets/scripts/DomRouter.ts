@@ -3,7 +3,7 @@ import MurypRoutesDom from '../../../src/app';
 
 MurypRoutesDom({
   routes: {
-    '@404':{
+    '@404': {
       component: ({ url }) => `<h1>404 Not Found</h1><div>URL: ${url}</div>`,
       title: ({ url }) => `404 - ${url}`,
       script: ({ url }) => {
@@ -88,17 +88,38 @@ MurypRoutesDom({
       },
     },
     '/about': {
-      component: ({ url }) => `<h1>About</h1><div>URL: ${url}</div>`,
-      title: ({ url }) => `About - ${url}`,
-      script: ({ url }) => {
+      'component': ({ url }) => `<h1>About</h1><div>URL: ${url}</div>`,
+      'title': ({ url }) => `About - ${url}`,
+      'script': ({ url }) => {
         console.log('About script executed', url);
       },
-      middleware: ({ url }) => {
+      'middleware': ({ url }) => {
         console.log('About middleware', url);
         return true;
       },
+      '/update/:id': {
+        component: ({ params, url, query }) =>
+          `<h1>Update ${params.id}</h1>
+              <div>URL: ${url}</div>
+              <div>Query: ${JSON.stringify(query)}</div>
+            <p>Update your content here.</p>
+            <div id="update-section">This is the update section</div>
+            `,
+        title: ({ params, url, query }) =>
+          `Update Blog - ${params.id} - ${url} - Query: ${JSON.stringify(
+            query,
+          )}`,
+        script: ({ params, url, query }) => {
+          console.log(`Update script for id: ${params.id}`, url, query);
+        },
+        middleware: ({ params, url, query }) => {
+          console.log(`Update middleware for id: ${params.id}`, url, query);
+          return true;
+        },
+      },
     },
   },
+
   settings: {
     id: 'app',
     isFirstRender: true,
