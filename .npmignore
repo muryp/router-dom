@@ -5,4 +5,7 @@ tsconfig*
 web
 .gitignore
 .eslint*
-pkg.vite.conf*
+vite.*
+dist/utils
+dist/module
+pnpm*

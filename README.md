@@ -4,145 +4,101 @@
 [![npm downloads](https://img.shields.io/npm/dm/@muryp/router-dom.svg?style=flat-square)](https://www.npmjs.com/package/@muryp/router-dom)
 [![GitHub license](https://img.shields.io/github/license/muryp/router-dom.svg?style=flat-square)](https://github.com/muryp/router-dom/blob/main/LICENSE)
 
-@muryp/router-dom is a lightweight and powerful routing library designed specifically for Astro JS or just vanilla. It seamlessly integrates with Astro JS projects, enabling developers to build Single Page Applications (SPAs) efficiently without requiring additional frameworks.
+A lightweight and powerful routing library designed for Vanilla JS and Astro JS projects. Build Single Page Applications (SPAs) efficiently with modern features like **Nested Layouts**, **Recursive Async Middleware**, and **Automated Path Resolution**.
 
-### Key Features
+### ✨ Key Features
 
-- **Router and SPA Support:** @muryp/router-dom allows developers to create robust SPAs and manage client-side routing in Astro JS projects. It provides smooth navigation and dynamic content loading without page refreshes.
+- **Router & SPA Support:** Smooth navigation and dynamic content loading without page refreshes.
+- **Nested Layouts:** Wrap components with multiple layers of layouts (e.g., Global Layout > Blog Sidebar > Post Content).
+- **Sequential Async Middleware:** Execute security or data checks layer-by-layer from root to leaf before rendering.
+- **Path Auto-Converter:** Write flat paths like `blog/post/:id`; the router automatically transforms them into a nested object tree.
+- **Base URL Support:** Perfectly handles sub-directory deployments (e.g., `domain.com/foo/`).
 
-- **Astro JS Compatibility:** Fully compatible with Astro JS, a modern static site generator for building fast websites. By combining @muryp/router-dom with Astro JS, you can enjoy the benefits of static site generation alongside a powerful routing system.
+### 🚀 Usage
 
-- **TypeScript Support:** Built with TypeScript, @muryp/router-dom offers strong typing for a more reliable and maintainable development experience. TypeScript enhances code quality, provides editor autocompletion, and helps catch potential errors during development.
+Simply define your routes and execute the router. It is designed to be triggered on initial load and every URL change.
 
-### Requirements
+```typescript
+import router from './src/example/router';
 
-To use @muryp/router-dom, ensure the following prerequisites are met:
+// this will be render after load if isFirstRender true
+router();
+```
 
-- **Astro JS:** Install Astro JS in your project as it serves as the foundation for building static websites with dynamic capabilities.
-- **Node.js v20 LTS or later:** The library requires Node.js version 16 or newer to ensure compatibility and leverage modern JavaScript features.
-- **TypeScript:** Using TypeScript is recommended to fully utilize the library's typing support.
+### 🏗 Core Concepts
 
-### Installation
+#### 1. Nested Layouts
 
-Install @muryp/router-dom using your preferred package manager:
+Layouts are functions that receive `context` and `children`. Content from child routes is injected into the `${children}` placeholder.
 
-**NPM:**
+```typescript
+// Example Layout
+const MainLayout = (ctx, children) => `
+  <nav>Navbar</nav>
+  <main>${children}</main> <footer>Footer</footer>
+`;
+```
+
+#### 2. Async Middleware Chain
+
+Middlewares are executed sequentially. If any middleware returns `false` (or a Promise resolving to `false`), the rendering process stops, and the user is redirected to the Home page.
+
+```typescript
+{
+  '/admin': {
+    middleware: async (ctx) => {
+      const session = await checkSession();
+      return session.isValid; // If false, the sub-routes below won't render
+    },
+    '/settings': {
+      component: AdminSettings
+    }
+  }
+}
+
+```
+
+### 🔍 Full Example
+
+For a complete implementation including:
+✅ **@404** and **@home** handling
+✅ **Dynamic Parameters** (`/:id`)
+✅ **Nested Layouts** (MainBlog & BlogPost)
+✅ **Script Execution** post-rendering
+
+Please refer directly to the example file:
+👉 **[`src/example/router.ts`](https://www.google.com/search?q=./src/example/router.ts)**
+
+### ⚙️ Global Settings
+
+Configure the router behavior via the `settings` object:
+
+| Property        | Description                                                           |
+| --------------- | --------------------------------------------------------------------- |
+| `id`            | Target DOM element ID where content will be rendered (e.g., `'app'`). |
+| `rootUrl`       | The base path for your app (e.g., `/foo` for `domain.com/foo/#/`).    |
+| `middleware`    | Global async function executed before every navigation.               |
+| `script`        | Global function executed after the DOM has been updated.              |
+| `isFirstRender` | Set to `true` to force rendering on the first load.                   |
+
+### 🛠 Installation
 
 ```bash
 npm install @muryp/router-dom
-```
-
-**Yarn:**
-
-```bash
-yarn add @muryp/router-dom
-```
-
-**PNPM:**
-
-```bash
+# or
 pnpm add @muryp/router-dom
+
 ```
 
-### Usage
+### 🧪 Requirements
 
-For usage examples, refer to the following files:
-
-- `./example/assets/scripts/DomRouter.ts`
-- `./src/types/global.ts`
-
-#### Router Configuration
-
-- **`component`**: Renders the component or HTML.
-- **`title`**: Sets the page title.
-- **`middleware`**: Executes before rendering. If it returns `false`, rendering and scripts are skipped.
-- **`script`**: Executes after rendering.
-- **Middleware**: Middleware functions are executed before rendering a route. They can be used for authentication, logging, or other pre-render checks. If the middleware returns `false`, the rendering and scripts for the route will be skipped.
-
-  Example:
-
-  ```typescript
-  {
-    '/dashboard': {
-      middleware: ({ params, url, query }) => {
-        if (!query.authenticated) {
-          console.log('Access denied:', url);
-          return false; // Prevent rendering
-        }
-        console.log('Access granted:', url);
-        return true; // Allow rendering
-      }
-    }
-  }
-  ```
-
-- **Script**: Scripts are executed after the route is rendered. They can be used for initializing components, attaching event listeners, or other post-render tasks.
-
-  Example:
-
-  ```typescript
-  {
-    '/profile/:id': {
-      script: ({ params, url, query }) => {
-        console.log(`Profile script executed for ID: ${params.id}`, url, query);
-        // Initialize profile-specific components here
-      }
-    }
-  }
-  ```
-
-#### URL Configuration
-
-- **`@404`**: Required for handling invalid or not-found URLs.
-- **`@home` or `/`**: Required for defining the home route.
-- **Dynamic Parameters**: Use `/product/:id` and access parameters like this:
-  ```javascript
-  ({ params }) => {
-    const { id } = params;
-  };
-  ```
-- **Nested URLs**: Define nested routes like `/product/:id/detail` or:
-
-  ```typescript
-  {
-    '/product/:id': {
-      '/detail': {}
-    }
-  }
-
-  ```
-
-- **Query**: Query parameters from the URL can be accessed in the `query` object. This is useful for passing additional data to routes.
-
-  Example:
-
-  ```typescript
-  {
-    '/search': {
-      component: ({ query }) => `
-        <h1>Search Results</h1>
-        <div>Query: ${JSON.stringify(query)}</div>
-      `,
-      script: ({ query }) => {
-        console.log('Search query:', query);
-      }
-    }
-  }
-  ```
-
-  Example URL: `http://example.com/#/search?term=astro&category=js`
-
-#### Global Settings
-
-- **`id`**: Specifies the target element ID for rendering.
-- **`middleware`**: Defines global middleware.
-- **`script`**: Executes global scripts.
-- **`isFirstRender`**: Prevents rendering on the first load, useful for SSR/SSG.
+- **Node.js v20 LTS** or later.
+- **TypeScript** is highly recommended for full type safety.
 
 ### Contributing
 
-Contributions to @muryp/router-dom are welcome! If you encounter issues, have suggestions, or want to contribute new features, visit the [GitHub repository](https://github.com/muryp/router-dom) to get involved.
+Contributions are welcome! If you encounter issues or have suggestions, please visit the [GitHub repository](https://github.com/muryp/router-dom).
 
 ### License
 
-@muryp/router-dom is released under the [MIT License](https://github.com/muryp/router-dom/blob/main/LICENSE), allowing you to use, modify, and distribute the library as needed.
+Released under the [MIT License](https://github.com/muryp/router-dom/blob/main/LICENSE).

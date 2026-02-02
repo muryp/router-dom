@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>hello</title>
+    <style>
+      /* CSS Langsung di dalam Tag Style */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        line-height: 1.6;
+        color: #333;
+        background-color: #f4f4f4;
+      }
+
+      /* Navigasi */
+      header {
+        background: #2c3e50;
+        color: #fff;
+        padding: 1rem 5%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+
+      header .logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+        letter-spacing: 2px;
+      }
+
+      nav ul {
+        display: flex;
+        list-style: none;
+      }
+
+      nav ul li {
+        margin-left: 20px;
+      }
+
+      nav ul li a {
+        color: #fff;
+        text-decoration: none;
+        transition: 0.3s;
+      }
+
+      nav ul li a:hover {
+        color: #3498db;
+      }
+      /* Responsif untuk HP */
+      @media (max-width: 768px) {
+        header {
+          flex-direction: column;
+        }
+        nav ul {
+          margin-top: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">MYBRAND</div>
+      <nav>
+        <ul>
+          <li><a href="#/">Home</a></li>
+          <li><a href="#/about">About</a></li>
+          <li><a href="#/blog">Blog</a></li>
+          <li><a href="#/example/nested/url">example</a></li>
+        </ul>
+      </nav>
+    </header>
+    <div id="app"></div>
+    <footer>
+      <p>&copy; 2026 MyBrand. All Rights Reserved.</p>
+    </footer>
+    <script type="module" src="/src/example/app.ts"></script>
+  </body>
+</html>
